@@ -1,0 +1,64 @@
+﻿using System.Collections;
+using Unity.Entities.UniversalDelegates;
+using Unity.VisualScripting.Dependencies.NCalc;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+
+
+
+public class MainManager : MonoBehaviour
+{
+    [SerializeField] private GameObject botPrefab = default;
+
+    [SerializeField] private Transform[] pos = default;         //生成位置
+    [SerializeField] private GameObject timeUpPanel;
+
+    private GameObject joinobj;
+    int i = 0;
+
+    IEnumerator Start()
+    {
+        yield return null; // 1フレーム待つ
+        timeUpPanel.gameObject.SetActive(false);
+    }
+
+    void Awake()
+    {
+        // プレイヤー生成のロジックをここに記述
+        joinobj = GameObject.Find("JoinedManager");
+        /*        if(PlayerDataHolder.Instance == null) { return; }
+                foreach (var player in PlayerDataHolder.Instance.players)
+                {
+                    if (player != null)
+                    {
+                        Instantiate(player, pos[i].position, pos[i].rotation);
+                        i++;
+                    }
+                }*/
+        //var players = FindObjectsByType<PlayerInput>(FindObjectsSortMode.None); 
+        var players = PlayerDataHolder.Instance.players;
+
+        for (i = 0; i < players.Count; i++)
+        {
+            players[i].transform.position =
+                pos[i].position;
+            players[i].transform.rotation =
+                pos[i].rotation;
+        }
+        while (i < pos.Length)
+        {
+            var bot = Instantiate(botPrefab, pos[i].position, pos[i].rotation);
+            var health = bot.GetComponent<PlayerHealth>();
+            if (health != null) health.playerIndex = i;
+            Debug.Log($"Bot{i + 1}: index={i}");
+            i++;
+        }
+    }
+
+    public void OnReset()
+    {
+        SceneManager.LoadScene("Start");
+        Destroy(joinobj);
+    }
+}
