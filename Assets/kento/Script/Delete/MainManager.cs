@@ -45,6 +45,9 @@ public class MainManager : MonoBehaviour
                 pos[i].position;
             players[i].transform.rotation =
                 pos[i].rotation;
+            var health = players[i].GetComponent<PlayerHealth>();
+            if (health != null) health.playerIndex = i;
+            Debug.Log($"Player{i + 1}: index={i}");
         }
         while (i < pos.Length)
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -162,11 +163,11 @@ public class JoineManager : MonoBehaviour
 
         if (currentSceneName == "Title" || currentSceneName == "Start")
         {
-            /*            startAction.Disable();
-                        joinAction.Disable();
-                        leaveAction.Disable();*/
+            startAction.Disable();
+            joinAction.Disable();
+            leaveAction.Disable();
 
-            SceneManager.LoadScene("prot");
+            SceneManager.LoadScene("ModeSelect_ui");
         }
     }
     private void Start()
@@ -194,5 +195,10 @@ public class JoineManager : MonoBehaviour
         PlayerDataHolder.Instance.SetData(obj.gameObject);
         DontDestroyOnLoad(obj);
         playerObjects[device.deviceId] = obj.gameObject;
+
+ /*       Debug.Log(obj.name + playerIndex); 
+
+        var health = obj.GetComponent<PlayerHealth>();
+        if (health != null) health.playerIndex = playerIndex;*/
     }
 }
