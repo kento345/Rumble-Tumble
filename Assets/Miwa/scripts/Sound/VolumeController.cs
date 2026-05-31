@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class VolumeController : MonoBehaviour
 {
 
-    
+
 
     public Slider bgmSlider;
     public Slider seSlider;

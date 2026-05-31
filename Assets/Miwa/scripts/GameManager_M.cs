@@ -49,6 +49,8 @@ public class GameManager_M : MonoBehaviour
     public float survivalTimeLimit = 20.0f;
     public float deathYCoordinate = -10.0f;
     public float upperDeathYCoordinate = 20.0f;
+    public float deathXLimit = 25.0f;
+    public float deathZLimit = 25.0f;
 
     [Header("リザルト演出用")]
     public GameObject ResultCanvas;      
@@ -364,7 +366,7 @@ public class GameManager_M : MonoBehaviour
         for (int i = activePlayers.Count - 1; i >= 0; i--)
         {
             GameObject player = activePlayers[i];
-            if (player == null) { continue; } 
+            if (player == null) { continue; }
 
             var health = player.GetComponent<PlayerHealth>();
             if (health == null) continue;
@@ -372,7 +374,14 @@ public class GameManager_M : MonoBehaviour
 
             if (isRespawning[pIndex]) continue;
 
-            if (player.transform.position.y < deathYCoordinate || player.transform.position.y > upperDeathYCoordinate)
+            // --- 各軸の場外判定チェック ---
+            Vector3 pos = player.transform.position;
+            bool isOutY = pos.y < deathYCoordinate || pos.y > upperDeathYCoordinate;
+            bool isOutX = Mathf.Abs(pos.x) > deathXLimit; // 左右
+            bool isOutZ = Mathf.Abs(pos.z) > deathZLimit; // 奥・手前
+
+            // 上下、左右、奥手前
+            if (isOutY || isOutX || isOutZ)
             {
                 isRespawning[pIndex] = true;
 
