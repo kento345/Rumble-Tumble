@@ -1,0 +1,82 @@
+===================================
+バグレポート：サドンデス時のコントローラーズレ
+===================================
+作成日：2026-06-01
+ブランチ：kento
+
+■ 症状
+ゲーム中（20秒）に1人以上が死亡 → そのままサドンデスに移行すると、
+死亡人数分だけコントローラー割り当てが1つずつズレる。
+
+例）1P死亡時
+  2PのキャラがP1コン
+  3PのキャラがP2コン
+  4PのキャラがP3コン
+  P4コンは誰も動かない
+
+自然解消：次のラウンド開始時に戻る
+
+
+■ 原因
+MainGameManger.Awake() にて、サドンデス移行時も
+死亡済みプレイヤー（例：1P, index=0）を
+PlayerInput.Instantiate で生成したあと、
+RegisterPlayer（GameManager_M.cs） 内で即 Destroy している。
+
+この「生成 → 即破棄」により Unity Input System が
+P1 のデバイスを一時ペアリング → 解放 する。
+その直後に残りプレイヤーの PlayerInput が
+SetAllPlayersControl(false→true) で再有効化されると、
+「最初に空いているデバイス」から順に再ペアリングされ、
+以下のズレが生じる：
+
+  本来：player1（2Pキャラ）→ P2_device
+  実際：player1（2Pキャラ）→ P1_device（解放されたばかり）
+
+
+■ 関係ファイル
+- Assets/kento/Script/JoinScript/MainGameManger.cs
+  （問題の PlayerInput.Instantiate ループ）
+- Assets/Miwa/scripts/GameManager_M.cs
+  （RegisterPlayer 内の Destroy 処理）
+
+
+■ 修正方法
+
+【修正①】GameManager_M.cs
+_qualifiedIndices の宣言のすぐ下に以下を追加
+
+    public static bool IsSuddenDeathNext => _isSuddenDeathNext;
+    public static IReadOnlyList<int> SuddenDeathQualifiedIndices => _qualifiedIndices;
+
+【修正②】MainGameManger.cs
+Awake() 内の devices 取得行の直後に以下を追加
+
+    bool isSuddenDeath = GameManager_M.IsSuddenDeathNext;
+    var qualifiedIndices = GameManager_M.SuddenDeathQualifiedIndices;
+
+for ループの先頭に以下の1行を追加
+
+    if (isSuddenDeath && !qualifiedIndices.Contains(i)) continue;
+
+（完成イメージ）
+    for (i = 0; i < pos.Length; i++)
+    {
+        if (isSuddenDeath && !qualifiedIndices.Contains(i)) continue;
+
+        if (i < devices.Count && devices[i] != null)
+        {
+            // 既存コード（変更不要）
+        }
+        ...
+    }
+
+
+■ 修正の根拠
+死亡済みスロットをそもそも生成しないことで
+「生成→即破棄」によるデバイス解放が起きなくなる。
+devices[i] をそのまま使うため
+元のコントローラー対応（P2キャラ→P2コン）が維持される。
+RegisterPlayer 内の既存 Destroy 処理はそのまま残してよい（安全網として機能する）。
+
+===================================
