@@ -26,6 +26,7 @@ public class JoineManager : MonoBehaviour
 
     private Dictionary<int, int> playerMap = new();
     private List<InputDevice> joinDevices = new List<InputDevice>();             //参加中のデバイス
+    
 
     private void Awake()
     {
@@ -120,7 +121,7 @@ public class JoineManager : MonoBehaviour
 
         if (playerObjects.TryGetValue(device.deviceId,out GameObject obj))
         {
-            PlayerDataHolder.Instance.RemoveData(obj);
+            PlayerDataHolder.Instance.RemoveData(obj,device.deviceId);
             var input = obj.GetComponent<PlayerInput>();
 
             if(input != null)
@@ -191,14 +192,39 @@ public class JoineManager : MonoBehaviour
                playerIndex: playerIndex,
                pairWithDevice: device
            );
-        //obj.transform.position = transform.position;
-        PlayerDataHolder.Instance.SetData(obj.gameObject);
+
+        PlayerDataHolder.Instance.SetData(obj.gameObject,playerIndex);
         DontDestroyOnLoad(obj);
         playerObjects[device.deviceId] = obj.gameObject;
 
- /*       Debug.Log(obj.name + playerIndex); 
+        //Debug.Log(obj.name + playerIndex);
 
-        var health = obj.GetComponent<PlayerHealth>();
-        if (health != null) health.playerIndex = playerIndex;*/
+        //PlayerHelthのStratが生成後に呼ばれているので登録されないGameManager_Mで探させる
+        //↓これを追加
+      /*  void Start()
+        {
+
+            var players = FindObjectsByType<PlayerHealth>(
+            FindObjectsSortMode.None);
+
+            foreach (var player in players)
+            {
+                RegisterPlayer(
+                    player.gameObject,
+                    player.playerIndex);
+            }
+        }*/
+
+        /*  var health = obj.GetComponent<PlayerHealth>();
+          if(health == null)
+          {
+              Debug.LogError("PlayerHealthコンポーネントが見つかりませんでした。");
+              return;
+          }
+          if (health != null)
+          {
+              Debug.Log($"PlayerHealthコンポーネントが見つかりました。playerIndex: {playerIndex}");
+              health.playerIndex = playerIndex;
+          }*/
     }
 }

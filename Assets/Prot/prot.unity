@@ -2817,6 +2817,7 @@ MonoBehaviour:
   scoreItemPrefab: {fileID: 6094040380130123712, guid: 94922b95eeadf604f8181ee20f55afde, type: 3}
   dropAmountPerDeath: 1
   CurrentModeState: 1
+  activePlayers: []
   suddenDeathKnockbackMultiplier: 10
   currentKnockbackMultiplier: 5
   suddenDeathSpeedMultiplier: 2
@@ -5711,7 +5712,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1091003102}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &1091003104
 Camera:
   m_ObjectHideFlags: 0
@@ -11214,6 +11215,10 @@ PrefabInstance:
     - target: {fileID: 2287823238433854807, guid: e55ec4b64cf89ff429e85592d0595ce6, type: 3}
       propertyPath: m_Name
       value: SoundManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4246246480602819715, guid: e55ec4b64cf89ff429e85592d0595ce6, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6269661876473755389, guid: e55ec4b64cf89ff429e85592d0595ce6, type: 3}
       propertyPath: m_LocalPosition.x

@@ -68,7 +68,7 @@ public class GameManager_M : MonoBehaviour
     public Mode CurrentModeState;
 
     private IGameMode _currentMode;
-    private List<GameObject> activePlayers = new List<GameObject>();
+    [SerializeField] private List<GameObject> activePlayers = new List<GameObject>();
 
     public float suddenDeathKnockbackMultiplier = 2.0f;
     public float currentKnockbackMultiplier = 1.0f;
@@ -317,17 +317,16 @@ public class GameManager_M : MonoBehaviour
             Destroy(p);
             return;
         }
-
-        if (!activePlayers.Contains(p)) { activePlayers.Add(p); }
-
-        if (CurrentModeState == Mode.SuddenDeath && _currentMode is SuddenDeathMode suddenMode)
+        if (!activePlayers.Contains(p))
         {
-            suddenMode.PowerUpSinglePlayer(p);
+            activePlayers.Add(p);
         }
-        if (PlayerUIManager.Instance != null)
-        {
-            PlayerUIManager.Instance.InitializePlayerUI(playerWins.Length, CurrentModeState == Mode.ScoreMode);
-        }
+
+        if (CurrentModeState == Mode.SuddenDeath && _currentMode is SuddenDeathMode suddenMode){ suddenMode.PowerUpSinglePlayer(p);}
+            if (PlayerUIManager.Instance != null)
+            {
+                PlayerUIManager.Instance.InitializePlayerUI(playerWins.Length, CurrentModeState == Mode.ScoreMode);
+            }
     }
 
     public void OnPlayerEliminated(GameObject eliminatedPlayer)

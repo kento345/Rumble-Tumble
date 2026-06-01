@@ -21,6 +21,19 @@ public class MainManager : MonoBehaviour
     {
         yield return null; // 1フレーム待つ
         timeUpPanel.gameObject.SetActive(false);
+
+        foreach (var player in PlayerDataHolder.Instance.players)
+        {
+            foreach (var p in PlayerDataHolder.Instance.ID)
+            {
+                var health = player.GetComponent<PlayerHealth>();
+
+                if (health != null)
+                {
+                    health.OnStart(p);
+                }
+            }
+        }
     }
 
     void Awake()
@@ -45,16 +58,17 @@ public class MainManager : MonoBehaviour
                 pos[i].position;
             players[i].transform.rotation =
                 pos[i].rotation;
-            var health = players[i].GetComponent<PlayerHealth>();
+           /* var health = players[i].GetComponent<PlayerHealth>();
             if (health != null) health.playerIndex = i;
-            Debug.Log($"Player{i + 1}: index={i}");
+            Debug.Log($"Player{i + 1}: index={i}");*/
+            //health.OnStart();
         }
         while (i < pos.Length)
         {
             var bot = Instantiate(botPrefab, pos[i].position, pos[i].rotation);
-            var health = bot.GetComponent<PlayerHealth>();
+          /*  var health = bot.GetComponent<PlayerHealth>();
             if (health != null) health.playerIndex = i;
-            Debug.Log($"Bot{i + 1}: index={i}");
+            Debug.Log($"Bot{i + 1}: index={i}");*/
             i++;
         }
     }

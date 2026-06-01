@@ -6,6 +6,7 @@ public class PlayerDataHolder : MonoBehaviour
 {
     public static PlayerDataHolder Instance { get; private set; } //Playerの接続データインスタンス
     public List<GameObject> players = new();
+    public List<int> ID = new();
 
     private void Awake()
     {
@@ -20,12 +21,13 @@ public class PlayerDataHolder : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void SetData(GameObject player)
+    public void SetData(GameObject player, int id)
     {
         players.Add(player);
     }
-    public void RemoveData(GameObject player)
+    public void RemoveData(GameObject player,int id)
     {
         players.Remove(player);
+        ID.Remove(id);
     }
 }
