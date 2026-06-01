@@ -47,7 +47,7 @@ public class VolumeController : MonoBehaviour
     {
         if (bgmText != null)
         {
-            bgmText.text = Mathf.RoundToInt(value * 100).ToString();
+            bgmText.text = Mathf.RoundToInt(value * 100).ToString()+ "%" ;
         }
     }
 
@@ -55,7 +55,7 @@ public class VolumeController : MonoBehaviour
     {
         if (seText != null)
         {
-            seText.text = Mathf.RoundToInt(value * 100).ToString();
+            seText.text = Mathf.RoundToInt(value * 100).ToString() +"%";
         }
     }
 }

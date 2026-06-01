@@ -2805,6 +2805,8 @@ MonoBehaviour:
   survivalTimeLimit: 20
   deathYCoordinate: -10
   upperDeathYCoordinate: 20
+  deathXLimit: 25
+  deathZLimit: 25
   ResultCanvas: {fileID: 484457289}
   resultRibbon: {fileID: 198276234}
   resultBlurVolume: {fileID: 1955170447}
@@ -11195,6 +11197,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: SoundManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4246246480602819715, guid: e55ec4b64cf89ff429e85592d0595ce6, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837092636588372681, guid: e55ec4b64cf89ff429e85592d0595ce6, type: 3}
+      propertyPath: MainBGM
+      value: 
+      objectReference: {fileID: 8300000, guid: 2963fcdbc95cb024d8b1e2d859095794, type: 3}
     - target: {fileID: 6269661876473755389, guid: e55ec4b64cf89ff429e85592d0595ce6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 216.79999
