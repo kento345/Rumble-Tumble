@@ -8,10 +8,10 @@ public class PlayerHealth : MonoBehaviour
 
     void Start()
     {
-/*        if (GameManager_M.Instance != null)
+        if (GameManager_M.Instance != null)
         {
             GameManager_M.Instance.RegisterPlayer(gameObject, playerIndex);
-        }*/
+        }
     }
 
     public void OnStart(int id)

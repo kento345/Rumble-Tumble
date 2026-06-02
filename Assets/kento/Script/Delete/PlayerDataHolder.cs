@@ -24,6 +24,7 @@ public class PlayerDataHolder : MonoBehaviour
     public void SetData(GameObject player, int id)
     {
         players.Add(player);
+        ID.Add(id);
     }
     public void RemoveData(GameObject player,int id)
     {

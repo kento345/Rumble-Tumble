@@ -22,16 +22,14 @@ public class MainManager : MonoBehaviour
         yield return null; // 1フレーム待つ
         timeUpPanel.gameObject.SetActive(false);
 
-        foreach (var player in PlayerDataHolder.Instance.players)
+        for (int i = 0; i < PlayerDataHolder.Instance.players.Count; i++)
         {
-            foreach (var p in PlayerDataHolder.Instance.ID)
-            {
-                var health = player.GetComponent<PlayerHealth>();
+            var player = PlayerDataHolder.Instance.players[i];
+            var helth = player.GetComponent<PlayerHealth>();
 
-                if (health != null)
-                {
-                    health.OnStart(p);
-                }
+            if (helth != null)
+            {
+                helth.OnStart(PlayerDataHolder.Instance.ID[i]);
             }
         }
     }
@@ -40,35 +38,30 @@ public class MainManager : MonoBehaviour
     {
         // プレイヤー生成のロジックをここに記述
         joinobj = GameObject.Find("JoinedManager");
-        /*        if(PlayerDataHolder.Instance == null) { return; }
-                foreach (var player in PlayerDataHolder.Instance.players)
-                {
-                    if (player != null)
-                    {
-                        Instantiate(player, pos[i].position, pos[i].rotation);
-                        i++;
-                    }
-                }*/
-        //var players = FindObjectsByType<PlayerInput>(FindObjectsSortMode.None); 
         var players = PlayerDataHolder.Instance.players;
 
+        if(players == null) { return; }
         for (i = 0; i < players.Count; i++)
         {
             players[i].transform.position =
                 pos[i].position;
             players[i].transform.rotation =
                 pos[i].rotation;
-           /* var health = players[i].GetComponent<PlayerHealth>();
+/*            var health = players[i].GetComponent<PlayerHealth>();
             if (health != null) health.playerIndex = i;
-            Debug.Log($"Player{i + 1}: index={i}");*/
+            int count = 0;
+            if (health)
+            {
+
+            }*/
             //health.OnStart();
         }
         while (i < pos.Length)
         {
             var bot = Instantiate(botPrefab, pos[i].position, pos[i].rotation);
-          /*  var health = bot.GetComponent<PlayerHealth>();
+            var health = bot.GetComponent<PlayerHealth>();
             if (health != null) health.playerIndex = i;
-            Debug.Log($"Bot{i + 1}: index={i}");*/
+            Debug.Log($"Bot{i + 1}: index={i}");
             i++;
         }
     }
