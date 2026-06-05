@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class VolumeController : MonoBehaviour
 {
-    [Header("タイトルシーンのスライダーとテキストをインスペクターから設定してください")]
+    [Header("タイトルシーンのスライダーとテキストを直接アタッチしてください")]
     public Slider bgmSlider;
     public Slider seSlider;
 
@@ -13,39 +13,38 @@ public class VolumeController : MonoBehaviour
 
     void Start()
     {
-        // タイトルシーンが読み込まれた（または設定画面が開いた）瞬間に毎回走る
         if (SoundManager.Instance != null)
         {
-            // 1. ずっと生き残っている SoundManager から現在の音量を取得して、新しいスライダーに同期
-            if (bgmSlider != null) bgmSlider.value = SoundManager.Instance.bgmVolume;
-            if (seSlider != null) seSlider.value = SoundManager.Instance.seVolume;
+            // 1. 【超重要】まずはイベントを完全にクリア（空っぽ）にする
+            if (bgmSlider != null) bgmSlider.onValueChanged.RemoveAllListeners();
+            if (seSlider != null) seSlider.onValueChanged.RemoveAllListeners();
 
-            // 2. テキスト表示も現在の音量に合わせる
+            // 2. イベントが空っぽ（何をしても暴発しない状態）の時に、本物の音量を安全に代入する
+            if (bgmSlider != null) bgmSlider.value = SoundManager.Instance.bgmVolume * 100f;
+            if (seSlider != null) seSlider.value = SoundManager.Instance.seVolume * 100f;
+
+            // 3. テキスト表示も本物の数値に合わせる
             UpdateBgmtext(SoundManager.Instance.bgmVolume);
             UpdateSetext(SoundManager.Instance.seVolume);
 
-            // 3. 一度イベントを掃除して、今画面に見えているスライダーに処理を結び直す
+            // 4. 【安全確認】代入がすべて終わった「後」で、初めてプレイヤーが動かした時のイベントを登録する
             if (bgmSlider != null)
             {
-                bgmSlider.onValueChanged.RemoveAllListeners();
                 bgmSlider.onValueChanged.AddListener(val =>
                 {
-                    SoundManager.Instance.SetBGMVolume(val);
-                    UpdateBgmtext(val);
+                    SoundManager.Instance.SetBGMVolume(val / 100f);
+                    UpdateBgmtext(val / 100f);
                 });
             }
 
             if (seSlider != null)
             {
-                seSlider.onValueChanged.RemoveAllListeners();
                 seSlider.onValueChanged.AddListener(val =>
                 {
-                    SoundManager.Instance.SetSEVolume(val);
-                    UpdateSetext(val);
+                    SoundManager.Instance.SetSEVolume(val / 100f);
+                    UpdateSetext(val / 100f);
                 });
             }
-
-            Debug.Log("<color=green>[VolumeController] 新しいタイトルUIとSoundManagerの同期に成功しました！</color>");
         }
     }
 

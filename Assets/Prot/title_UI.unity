@@ -2653,9 +2653,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 219048067}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 1
-  m_WholeNumbers: 0
-  m_Value: 0.1
+  m_MaxValue: 100
+  m_WholeNumbers: 1
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -5194,9 +5194,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1641817167}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 1
-  m_WholeNumbers: 0
-  m_Value: 0.1
+  m_MaxValue: 100
+  m_WholeNumbers: 1
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -5394,6 +5394,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1926648005}
     m_Modifications:
+    - target: {fileID: 5781208009149404012, guid: c32ec83fe7349814a988457bd034d92d, type: 3}
+      propertyPath: MainBGM
+      value: 
+      objectReference: {fileID: 8300000, guid: 10dc49bc4b390934db9840069933d561, type: 3}
+    - target: {fileID: 5781208009149404012, guid: c32ec83fe7349814a988457bd034d92d, type: 3}
+      propertyPath: seVolume
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5781208009149404012, guid: c32ec83fe7349814a988457bd034d92d, type: 3}
+      propertyPath: bgmVolume
+      value: 0.15
+      objectReference: {fileID: 0}
     - target: {fileID: 6787087279050976590, guid: c32ec83fe7349814a988457bd034d92d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -188.6189
