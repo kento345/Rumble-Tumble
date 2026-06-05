@@ -33,6 +33,18 @@ public class PlayerInputController : MonoBehaviour
         atack = GetComponent<AtackController>();
     }
 
+    private void OnEnable()
+    {
+       OnMoveStop(true);
+    }
+
+    public void OnMoveStop(bool x)
+    {
+        // InputActionを有効化
+        var playerInput = GetComponent<PlayerInput>();
+        playerInput.enabled = x;
+    }
+
     public void OnMove(InputAction.CallbackContext context)
     {
         if (stateManager.State == State.Knockback)
