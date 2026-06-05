@@ -29,7 +29,7 @@ public class MainManager : MonoBehaviour
 
             if (helth != null)
             {
-                helth.OnStart(PlayerDataHolder.Instance.ID[i]);
+                //helth.OnStart(PlayerDataHolder.Instance.ID[i]);
             }
         }
     }
