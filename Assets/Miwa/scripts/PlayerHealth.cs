@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -14,18 +12,11 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    public void OnStart(int id)
-    {
-        if (GameManager_M.Instance != null)
-        {
-            GameManager_M.Instance.RegisterPlayer(gameObject, id);
-        }
-    }
-
     public void OnFallOut()
     {
         if (GameManager_M.Instance != null)
         {
+            // モジュール構造に対応したGameManagerの死亡通知を叩く
             GameManager_M.Instance.OnPlayerEliminated(gameObject);
         }
         Destroy(gameObject);
