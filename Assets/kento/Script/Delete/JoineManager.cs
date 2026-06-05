@@ -192,6 +192,9 @@ public class JoineManager : MonoBehaviour
                playerIndex: playerIndex,
                pairWithDevice: device
            );
+        obj.transform.position = transform.position;
+        var input = obj.GetComponent<PlayerInputController>();
+        input.OnMoveStop(false);
 
         PlayerDataHolder.Instance.SetData(obj.gameObject,playerIndex);
         DontDestroyOnLoad(obj);

@@ -18,11 +18,11 @@ public class PlayerStateModule
 
     public void SetAllPlayersControl(bool enabled)
     {
-        foreach (var player in GetActivePlayers())
+        foreach (var player in PlayerDataHolder.Instance.players)
         {
             if (player == null) continue;
-            var input = player.GetComponent<UnityEngine.InputSystem.PlayerInput>();
-            if (input != null) input.enabled = enabled;
+            PlayerInputController input = player.GetComponent<PlayerInputController>();
+            if (input != null) input.OnMoveStop(enabled);
 
             var rb = player.GetComponent<Rigidbody>();
             if (rb != null)
@@ -36,9 +36,30 @@ public class PlayerStateModule
                 else rb.isKinematic = false;
             }
 
-            var moveScript = player.GetComponent<MoveController>();
-            if (moveScript != null) moveScript.enabled = enabled;
+           /* var moveScript = player.GetComponent<MoveController>();
+            if (moveScript != null) moveScript.enabled = enabled;*/
         }
+        /* foreach (var player in GetActivePlayers())
+         {
+             if (player == null) continue;
+             var input = player.GetComponent<UnityEngine.InputSystem.PlayerInput>();
+             if (input != null) input.enabled = enabled;
+
+             var rb = player.GetComponent<Rigidbody>();
+             if (rb != null)
+             {
+                 if (!enabled)
+                 {
+                     rb.linearVelocity = Vector3.zero;
+                     rb.angularVelocity = Vector3.zero;
+                     rb.isKinematic = true;
+                 }
+                 else rb.isKinematic = false;
+             }
+
+             var moveScript = player.GetComponent<MoveController>();
+             if (moveScript != null) moveScript.enabled = enabled;
+         }*/
     }
 
     public void RegisterPlayer(GameObject p, int index)

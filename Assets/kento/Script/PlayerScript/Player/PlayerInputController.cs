@@ -40,9 +40,9 @@ public class PlayerInputController : MonoBehaviour
 
     public void OnMoveStop(bool x)
     {
-        // InputActionを有効化
-        var playerInput = GetComponent<PlayerInput>();
-        playerInput.enabled = x;
+        // このScriptを無効化,有効化
+        move.enabled = x;
+        atack.enabled = x;
     }
 
     public void OnMove(InputAction.CallbackContext context)
