@@ -10,7 +10,6 @@ public class ScoreItem : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        // 地面を突き抜けないように連続衝突検知を有効にする
         if (rb != null) rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
@@ -24,13 +23,10 @@ public class ScoreItem : MonoBehaviour
         if (rb == null) rb = GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.isKinematic = false; // 物理を有効にする
+            rb.isKinematic = false;
             rb.AddForce(direction * force, ForceMode.Impulse);
         }
     }
-
-    // ★重要：地面を突き抜けないように Trigger ではなく Collision で「着地」させる
-    // 拾う判定は OnTrigger にする
 
     private void OnTriggerStay(Collider other)
     {
@@ -42,8 +38,8 @@ public class ScoreItem : MonoBehaviour
             if (health != null)
             {
                 isCollected = true;
+                // ★古いScoreManagerではなく、GameManager_Mに統合されたスコアシステムへ加点！
                 GameManager_M.Instance.AddScore(health.playerIndex, 1);
-                // 消える前にエフェクト等あればここで
                 Destroy(gameObject);
             }
         }

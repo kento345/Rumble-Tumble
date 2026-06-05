@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using static GameMode;
 
@@ -6,7 +6,7 @@ public class SurvivalMode : IGameMode
 {
     private float currentTime;
     private Text timerText;
-    public bool isTimerActive=false;
+    public bool isTimerActive = false;
 
     public SurvivalMode(Text uiText, float timeLimit)
     {
@@ -14,9 +14,9 @@ public class SurvivalMode : IGameMode
         currentTime = timeLimit;
     }
 
-    public void OnEnter() 
+    public void OnEnter()
     {
-
+        isTimerActive = true;
     }
 
     public void OnUpdate()
@@ -35,10 +35,14 @@ public class SurvivalMode : IGameMode
         // 3. 時間切れ判定
         if (currentTime <= 0)
         {
+            isTimerActive = false;
             // GameManagerに「時間切れだよ」と伝える
             GameManager_M.Instance.TimeExpiredForSurvival();
         }
     }
 
-    public void OnExit() { }
+    public void OnExit()
+    {
+        isTimerActive = false;
+    }
 }
