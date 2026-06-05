@@ -46,13 +46,17 @@ public class AtackController : MonoBehaviour
         t = value;
     }
 
-    private void Start()
+    private void Awake()
     {
-        curentRecoveryTime = StrongRecoveryTime;
-
         rb = GetComponent<Rigidbody>();
         stateManager = GetComponent<PlayerStateManager>();
         animeCon = GetComponent<AnimatorController>();
+    }
+
+
+    private void Start()
+    {
+        curentRecoveryTime = StrongRecoveryTime;
     }
 
     void Update()

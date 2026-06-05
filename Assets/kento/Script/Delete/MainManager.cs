@@ -31,7 +31,6 @@ public class MainManager : MonoBehaviour
             if (helth != null)
             {
                 helth.OnStart(player, PlayerDataHolder.Instance.ID[i]);
-                Debug.LogError("PlayerHealth.OnStart called for player " + i);
             }
         }
     }
