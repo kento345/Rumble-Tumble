@@ -1,55 +1,51 @@
 ﻿using TMPro;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class VolumeController : MonoBehaviour
 {
+    [Header("タイトルシーンのスライダーとテキストをインスペクターから設定してください")]
     public Slider bgmSlider;
     public Slider seSlider;
 
     public TMP_Text bgmText;
     public TMP_Text seText;
 
-    [Header("【音量の初期値設定】 0.0 ～ 1.0 の間で指定")]
-    [SerializeField] private float defaultBGM = 0.3f;
-    [SerializeField] private float defaultSE = 0.5f;
-
     void Start()
     {
+        // タイトルシーンが読み込まれた（または設定画面が開いた）瞬間に毎回走る
         if (SoundManager.Instance != null)
         {
-            // 初回起動時、またはデータが不正（0以下など）な場合に強制リセットして指定の初期値を流し込む
-            if (!PlayerPrefs.HasKey("VolumeInitialized") || (SoundManager.Instance.bgmVolume <= 0f && SoundManager.Instance.seVolume <= 0f))
+            // 1. ずっと生き残っている SoundManager から現在の音量を取得して、新しいスライダーに同期
+            if (bgmSlider != null) bgmSlider.value = SoundManager.Instance.bgmVolume;
+            if (seSlider != null) seSlider.value = SoundManager.Instance.seVolume;
+
+            // 2. テキスト表示も現在の音量に合わせる
+            UpdateBgmtext(SoundManager.Instance.bgmVolume);
+            UpdateSetext(SoundManager.Instance.seVolume);
+
+            // 3. 一度イベントを掃除して、今画面に見えているスライダーに処理を結び直す
+            if (bgmSlider != null)
             {
-                SoundManager.Instance.SetBGMVolume(defaultBGM);
-                SoundManager.Instance.SetSEVolume(defaultSE);
-                PlayerPrefs.SetInt("VolumeInitialized", 1);
-                PlayerPrefs.Save();
+                bgmSlider.onValueChanged.RemoveAllListeners();
+                bgmSlider.onValueChanged.AddListener(val =>
+                {
+                    SoundManager.Instance.SetBGMVolume(val);
+                    UpdateBgmtext(val);
+                });
             }
 
-            // 現在 SoundManager が保持している「実際の音量」をスライダーに正確に同期
-            bgmSlider.value = SoundManager.Instance.bgmVolume;
-            seSlider.value = SoundManager.Instance.seVolume;
-
-            // テキスト表示も現在の音量に同期
-            UpdateBgmtext(bgmSlider.value);
-            UpdateSetext(seSlider.value);
-
-            // スライダーを動かした時のイベント登録（重複登録防止）
-            bgmSlider.onValueChanged.RemoveAllListeners();
-            bgmSlider.onValueChanged.AddListener(val =>
+            if (seSlider != null)
             {
-                SoundManager.Instance.SetBGMVolume(val);
-                UpdateBgmtext(val);
-            });
+                seSlider.onValueChanged.RemoveAllListeners();
+                seSlider.onValueChanged.AddListener(val =>
+                {
+                    SoundManager.Instance.SetSEVolume(val);
+                    UpdateSetext(val);
+                });
+            }
 
-            seSlider.onValueChanged.RemoveAllListeners();
-            seSlider.onValueChanged.AddListener(val =>
-            {
-                SoundManager.Instance.SetSEVolume(val);
-                UpdateSetext(val);
-            });
+            Debug.Log("<color=green>[VolumeController] 新しいタイトルUIとSoundManagerの同期に成功しました！</color>");
         }
     }
 

@@ -46,6 +46,7 @@ public class SoundManager : MonoBehaviour
     [Header("SE重なり防止設定")]
     [SerializeField] private float defaultSeInterval = 0.1f;
     private Dictionary<AudioClip, float> lastPlayTimes = new Dictionary<AudioClip, float>();
+
     void Awake()
     {
         if (Instance == null)
