@@ -32,7 +32,6 @@ public class PlayerItemEffect : MonoBehaviour
     private void OnEnable()
     {
         GameObject obj = GameObject.Find("PaintImage");
-        if(paint == null) { return; }
         paint = obj.GetComponent<Image>();
         GameObject a = GameObject.Find("ItemTxt");
         text = a.GetComponent<Text>();
@@ -46,7 +45,7 @@ public class PlayerItemEffect : MonoBehaviour
                 playerInput.SetReverse(false);
             }
         }
-
+        if (paint == null) { return; }
         paint.enabled = false;
         text.enabled = false;
     }
