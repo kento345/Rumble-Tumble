@@ -24,6 +24,8 @@ public class PlayerStateModule
             if (player == null) continue;
             PlayerInputController controller = player.GetComponent<PlayerInputController>();
             if (controller != null) controller.OnMoveStop(enabled);
+            BOTController botCon = player.GetComponent<BOTController>();
+            if (botCon != null) botCon.enabled = enabled;
         }
         /* foreach (var player in PlayerDataHolder.Instance.players)
          {

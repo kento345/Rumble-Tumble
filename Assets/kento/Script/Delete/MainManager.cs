@@ -33,6 +33,18 @@ public class MainManager : MonoBehaviour
                 helth.OnStart(player, PlayerDataHolder.Instance.ID[i]);
             }
         }
+        while (i < pos.Length)
+        {
+            var bot = Instantiate(botPrefab, pos[i].position, pos[i].rotation);
+            var health = bot.GetComponent<PlayerHealth>();
+            health.OnStart(bot.gameObject, i);
+            var botCon = bot.GetComponent<BOTController>();
+            if (botCon != null)
+            {
+                botCon.enabled = false;
+            }
+            i++;
+        }
     }
 
     void Awake()
@@ -48,21 +60,6 @@ public class MainManager : MonoBehaviour
                 pos[i].position;
             players[i].transform.rotation =
                 pos[i].rotation;
-/*            var health = players[i].GetComponent<PlayerHealth>();
-            if (health != null) health.playerIndex = i;
-            int count = 0;
-            if (health)
-            {
-
-            }*/
-            //health.OnStart();
-        }
-        while (i < pos.Length)
-        {
-            var bot = Instantiate(botPrefab, pos[i].position, pos[i].rotation);
-            var health = bot.GetComponent<PlayerHealth>();
-            health.OnStart(bot.gameObject, i);
-            i++;
         }
     }
 
