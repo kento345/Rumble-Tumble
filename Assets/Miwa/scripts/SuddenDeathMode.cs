@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Reflection;
 using static GameMode;
 
 public class SuddenDeathMode : IGameMode
@@ -12,7 +11,7 @@ public class SuddenDeathMode : IGameMode
             GameManager_M.Instance.suddenDeathUI.SetActive(true);
         }
 
-        // ★重要：ここで「現在の倍率」をセットする
+        // ★重要：ノックバック倍率をセットする
         if (GameManager_M.Instance != null)
         {
             GameManager_M.Instance.currentKnockbackMultiplier = GameManager_M.Instance.suddenDeathKnockbackMultiplier;
@@ -36,5 +35,11 @@ public class SuddenDeathMode : IGameMode
         }
     }
 
-    public void PowerUpSinglePlayer(GameObject player) { }
+    public void PowerUpSinglePlayer(GameObject player)
+    {
+        if (player == null) return;
+
+        // 例: 移動スクリプト等があれば、GameManager_Mの突進速度などの倍率を適用するロジックをここに書けます
+        // 現状はエラーが出ないように空メソッドとして安全に確保しています
+    }
 }

@@ -32,6 +32,7 @@ public class PlayerItemEffect : MonoBehaviour
     private void OnEnable()
     {
         GameObject obj = GameObject.Find("PaintImage");
+        if(paint == null) { return; }
         paint = obj.GetComponent<Image>();
         GameObject a = GameObject.Find("ItemTxt");
         text = a.GetComponent<Text>();

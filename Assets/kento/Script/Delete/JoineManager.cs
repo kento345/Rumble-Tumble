@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -25,6 +26,7 @@ public class JoineManager : MonoBehaviour
 
     private Dictionary<int, int> playerMap = new();
     private List<InputDevice> joinDevices = new List<InputDevice>();             //参加中のデバイス
+    
 
     private void Awake()
     {
@@ -119,7 +121,7 @@ public class JoineManager : MonoBehaviour
 
         if (playerObjects.TryGetValue(device.deviceId,out GameObject obj))
         {
-            PlayerDataHolder.Instance.RemoveData(obj);
+            PlayerDataHolder.Instance.RemoveData(obj,device.deviceId);
             var input = obj.GetComponent<PlayerInput>();
 
             if(input != null)
@@ -162,11 +164,11 @@ public class JoineManager : MonoBehaviour
 
         if (currentSceneName == "Title" || currentSceneName == "Start")
         {
-            /*            startAction.Disable();
-                        joinAction.Disable();
-                        leaveAction.Disable();*/
+            startAction.Disable();
+            joinAction.Disable();
+            leaveAction.Disable();
 
-            SceneManager.LoadScene("prot");
+            SceneManager.LoadScene("ModeSelect_ui");
         }
     }
     private void Start()
@@ -190,8 +192,11 @@ public class JoineManager : MonoBehaviour
                playerIndex: playerIndex,
                pairWithDevice: device
            );
-        //obj.transform.position = transform.position;
-        PlayerDataHolder.Instance.SetData(obj.gameObject);
+        obj.transform.position = transform.position;
+        var input = obj.GetComponent<PlayerInputController>();
+        input.OnMoveStop(false);
+
+        PlayerDataHolder.Instance.SetData(obj.gameObject,playerIndex);
         DontDestroyOnLoad(obj);
         playerObjects[device.deviceId] = obj.gameObject;
     }

@@ -6,9 +6,15 @@ public class SceneBGMPlayer : MonoBehaviour
 
     void Start()
     {
+        
+        Time.timeScale = 1.0f;
+        AudioListener.pause = false;
+
         if (playOnStart && SoundManager.Instance != null)
         {
-            // TitleBGMなど、鳴らしたいクリップを指定
+            
+            SoundManager.Instance.StopBGM();
+
             SoundManager.Instance.PlayBGM(SoundManager.Instance.MainBGM);
         }
     }

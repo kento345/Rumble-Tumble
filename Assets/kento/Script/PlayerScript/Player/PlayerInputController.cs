@@ -33,6 +33,18 @@ public class PlayerInputController : MonoBehaviour
         atack = GetComponent<AtackController>();
     }
 
+    private void OnEnable()
+    {
+       OnMoveStop(true);
+    }
+
+    public void OnMoveStop(bool x)
+    {
+        // このScriptを無効化,有効化
+        move.enabled = x;
+        atack.enabled = x;
+    }
+
     public void OnMove(InputAction.CallbackContext context)
     {
         if (stateManager.State == State.Knockback)
