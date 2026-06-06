@@ -51,11 +51,6 @@ public class GlobalUIInitializer : MonoBehaviour
             {
                 EventSystem.current.SetSelectedGameObject(null);
                 EventSystem.current.SetSelectedGameObject(target);
-                Debug.Log($"<color=green>[GlobalUI] {target.name} を強制選択しました</color>");
-            }
-            else
-            {
-                Debug.LogWarning("[GlobalUI] 対象のボタンが見つかりませんでした");
             }
         }
     }

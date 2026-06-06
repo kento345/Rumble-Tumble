@@ -113,12 +113,12 @@ public class PlayerStateModule
             }
         }
 
-        // ★【修正ポイント】落下して脱落したプレイヤーもデストロイせず非アクティブ化
+        //落下して脱落したプレイヤーもデストロイせず非アクティブ化
         foreach (var p in playersToEliminate)
         {
             activePlayers.Remove(p);
-            gm.OnPlayerEliminated(p); // GameManager側の脱落・終了判定を走らせる
-            p.SetActive(false);        // Destroy(p); から変更
+            gm.OnPlayerEliminated(p);
+            p.SetActive(false);
         }
     }
 
@@ -165,7 +165,7 @@ public class PlayerStateModule
         isRespawning[playerIndex] = false;
     }
 
-    // 【重要】リストの取得時、非アクティブになったプレイヤーも除外して返すように変更
+    //非アクティブになったプレイヤーも除外して返すように変更
     public List<GameObject> GetActivePlayers()
     {
         activePlayers.RemoveAll(p => p == null || !p.activeInHierarchy);

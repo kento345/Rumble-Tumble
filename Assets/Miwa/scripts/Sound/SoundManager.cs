@@ -52,6 +52,11 @@ public class SoundManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+
+            // ★【超重要】もしCanvasなどの下に配置されていたら、親から独立させる
+            // これをしないと、DontDestroyOnLoadを指定してもシーン切り替え時に一緒に消されてしまいます
+            transform.SetParent(null);
+
             DontDestroyOnLoad(gameObject);
 
             ApplyVolume();
@@ -59,6 +64,7 @@ public class SoundManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
     }
 
