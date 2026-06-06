@@ -82,6 +82,9 @@ public class PlayerStateModule
 
         List<GameObject> playersToEliminate = new List<GameObject>();
 
+        Camera mainCam = Camera.main;
+        if(mainCam ==null) return; // カメラがない場合は落下判定をスキップ
+
         for (int i = activePlayers.Count - 1; i >= 0; i--)
         {
             GameObject player = activePlayers[i];
@@ -93,10 +96,10 @@ public class PlayerStateModule
 
             if (isRespawning[pIndex]) continue;
 
-            Vector3 pos = player.transform.position;
-            bool isOutY = pos.y < gm.deathYCoordinate || pos.y > gm.upperDeathYCoordinate;
-            bool isOutX = Mathf.Abs(pos.x) > gm.deathXLimit;
-            bool isOutZ = Mathf.Abs(pos.z) > gm.deathZLimit;
+            Vector3 viewportPos = mainCam.WorldToViewportPoint(player.transform.position);
+            bool isOutX = viewportPos.x < 0f || viewportPos.x > 1f;
+            bool isOutY = viewportPos.y < 0f || viewportPos.y > 1f;
+            bool isOutZ = viewportPos.z < 0f;
 
             if (isOutY || isOutX || isOutZ)
             {
