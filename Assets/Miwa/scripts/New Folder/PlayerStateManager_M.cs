@@ -64,17 +64,17 @@ public class PlayerStateModule
 
     public void RegisterPlayer(GameObject p, int index)
     {
-        // ★ サドンデス時、対象外のプレイヤーをゲームから除外する元のロジックを完全復元
+        // ★【修正ポイント】サドンデス時、対象外のプレイヤーをデストロイせず、非アクティブにして除外する
         if (gm.CurrentModeState == GameManager_M.Mode.SuddenDeath && !GameManager_M._qualifiedIndices.Contains(index))
         {
             activePlayers.Remove(p);
-            Object.Destroy(p);
+            p.SetActive(false); // Destroyから変更
             return;
         }
 
         if (!activePlayers.Contains(p)) activePlayers.Add(p);
 
-        // ★ サドンデスモードが有効な場合、プレイヤーを強化するロジックを完全復元
+        // ★ サドンデスモードが有効な場合、プレイヤーを強化するロジック
         if (gm.CurrentModeState == GameManager_M.Mode.SuddenDeath && gm._currentMode is SuddenDeathMode suddenMode)
         {
             suddenMode.PowerUpSinglePlayer(p);
@@ -93,7 +93,7 @@ public class PlayerStateModule
         List<int> currentLiving = new List<int>();
         foreach (var p in activePlayers)
         {
-            if (p != null)
+            if (p != null && p.activeInHierarchy) // 生きてる（アクティブな）プレイヤーのみ
             {
                 var h = p.GetComponent<PlayerHealth>();
                 if (h != null) currentLiving.Add(h.playerIndex);
@@ -140,11 +140,12 @@ public class PlayerStateModule
             }
         }
 
+        //落下して脱落したプレイヤーもデストロイせず非アクティブ化
         foreach (var p in playersToEliminate)
         {
             activePlayers.Remove(p);
-            gm.OnPlayerEliminated(p); // GameManager側の集計ロジックを走らせる
-            Object.Destroy(p);
+            gm.OnPlayerEliminated(p);
+            p.SetActive(false);
         }
     }
 
@@ -191,11 +192,20 @@ public class PlayerStateModule
         isRespawning[playerIndex] = false;
     }
 
-    public List<GameObject> GetActivePlayers() { activePlayers.RemoveAll(p => p == null); return activePlayers; }
+    //非アクティブになったプレイヤーも除外して返すように変更
+    public List<GameObject> GetActivePlayers()
+    {
+        activePlayers.RemoveAll(p => p == null || !p.activeInHierarchy);
+        return activePlayers;
+    }
+
     public int GetActivePlayersCount()
     {
         int count = 0;
-        foreach (var p in activePlayers) if (p != null) count++;
+        foreach (var p in activePlayers)
+        {
+            if (p != null && p.activeInHierarchy) count++;
+        }
         return count;
     }
 }

@@ -46,11 +46,17 @@ public class SoundManager : MonoBehaviour
     [Header("SE重なり防止設定")]
     [SerializeField] private float defaultSeInterval = 0.1f;
     private Dictionary<AudioClip, float> lastPlayTimes = new Dictionary<AudioClip, float>();
+
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+
+            // ★【超重要】もしCanvasなどの下に配置されていたら、親から独立させる
+            // これをしないと、DontDestroyOnLoadを指定してもシーン切り替え時に一緒に消されてしまいます
+            transform.SetParent(null);
+
             DontDestroyOnLoad(gameObject);
 
             ApplyVolume();
@@ -58,6 +64,7 @@ public class SoundManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
     }
 
