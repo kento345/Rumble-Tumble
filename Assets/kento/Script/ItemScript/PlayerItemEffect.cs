@@ -29,9 +29,25 @@ public class PlayerItemEffect : MonoBehaviour
     MoveController mc;
     Reception reception;
 
+
+    void Awake()
+    {
+        ac = GetComponent<AtackController>();
+        mc = GetComponent<MoveController>();
+        reception = GetComponent<Reception>();
+
+        defaultScale = transform.localScale;
+        defaultWeakKnockbackForce = ac.WeakKnockbackForce;
+        defaultSpeed = mc.Speed;
+        defaultStrongKnockbackForce = ac.StrongKnockbackForce;
+        defaltCircleSize = circle.size;
+        defaltArrawSize = arraw.transform.localScale;
+    }
+
     private void OnEnable()
     {
         GameObject obj = GameObject.Find("PaintImage");
+        if(obj == null) { return; }
         paint = obj.GetComponent<Image>();
         GameObject a = GameObject.Find("ItemTxt");
         text = a.GetComponent<Text>();
@@ -50,20 +66,7 @@ public class PlayerItemEffect : MonoBehaviour
         text.enabled = false;
     }
 
-    private void Start()
-    {
-        ac = GetComponent<AtackController>();
-        mc = GetComponent<MoveController>();
-        reception = GetComponent<Reception>();
-
-        defaultScale = transform.localScale;
-        defaultWeakKnockbackForce = ac.WeakKnockbackForce;
-        defaultSpeed = mc.Speed;
-        defaultStrongKnockbackForce = ac.StrongKnockbackForce;
-        defaltCircleSize = circle.size;
-        defaltArrawSize = arraw.transform.localScale;
-       
-    }
+   
 
     public void ApplyItem(Item item)
     {

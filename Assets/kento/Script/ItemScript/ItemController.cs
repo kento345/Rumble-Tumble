@@ -30,7 +30,7 @@ public class ItemController : MonoBehaviour
         {
             PlayerItemEffect player = other.GetComponent<PlayerItemEffect>();
 
-            if (player != null /*&& !player*/)
+            if (player != null && !player.isEffectActive)
             {
                 player.ApplyItem(item);
                 Destroy(gameObject);
