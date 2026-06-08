@@ -52,9 +52,23 @@ public class UIModule
     {
         yield return null;
         gm.isGameStarted = false;
+
+        // ★【追加】カウントダウン開始前に全員の操作・BOTの思考を止める
         gm.PlayerState.SetAllPlayersControl(false);
 
-        // ★ここで初めてサドンデスフラグをリセット（元のロジックとタイミングを合わせる）
+        // ★【追加】サドンデス突入時などに、前の慣性で滑っていかないよう物理速度を完全にゼロにする
+        foreach (var player in gm.GetActivePlayers())
+        {
+            if (player == null) continue;
+            Rigidbody rb = player.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+        }
+
+        // ここで初めてサドンデスフラグをリセット
         GameManager_M._isSuddenDeathNext = false;
 
         int count = 3;
@@ -65,6 +79,9 @@ public class UIModule
                 gm.CountdownUI.text = count.ToString();
                 gm.CountdownUI.color = (count <= 1) ? Color.red : Color.white;
                 gm.StartCoroutine(GhostTrailEffect(gm.CountdownUI));
+
+                gm.PlayerState.SetAllPlayersControl(false);
+
                 yield return new WaitForSeconds(1.0f);
                 count--;
             }
@@ -78,6 +95,7 @@ public class UIModule
 
             if (SoundManager.Instance != null) SoundManager.Instance.PlaySE(SoundManager.Instance.gameStartGongSE);
             gm.isGameStarted = true;
+
             gm.PlayerState.SetAllPlayersControl(true);
 
             yield return new WaitForSeconds(1.0f);

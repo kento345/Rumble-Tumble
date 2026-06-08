@@ -149,9 +149,33 @@ public class GameManager_M : MonoBehaviour
 
     public void TimeExpiredForSurvival() => NextRound(true);
 
+    public void OnPlayerEliminated(GameObject eliminatedPlayer)
+    {
+        if (isRoundEnding || CurrentModeState == Mode.GameOver) return;
+
+        // ★【確実な修正】引数やタイミングに依存せず、今この瞬間に「アクティブなプレイヤー」を直接数える
+        int realSurvivorCount = 0;
+        var allPlayers = PlayerState.GetActivePlayers(); // これで生存リストが取れる
+
+        foreach (var p in allPlayers)
+        {
+            // 落ちた本人はこれから非アクティブになる、または既に非アクティブなので除外
+            if (p != null && p != eliminatedPlayer && p.activeInHierarchy)
+            {
+                realSurvivorCount++;
+            }
+        }
+
+        // 生き残りが1人以下（あるいは全員相打ちで0人）になったら、確実に次のラウンドへ
+        if (realSurvivorCount <= 1)
+        {
+            NextRound();
+        }
+    }
+
     public void NextRound(bool isTimeUp = false)
     {
-        if (isRoundEnding) return;
+        if (isRoundEnding || CurrentModeState == Mode.GameOver) return;
         isRoundEnding = true;
 
         if (CurrentModeState == Mode.ScoreMode)
@@ -162,28 +186,60 @@ public class GameManager_M : MonoBehaviour
             return;
         }
 
-        var activePlayers = PlayerState.GetActivePlayers();
-        int survivorCount = activePlayers.Count;
-
-        if (survivorCount == 1)
+        // 今この瞬間に生き残っている（アクティブな）プレイヤーを正確に取得
+        List<GameObject> survivors = new List<GameObject>();
+        foreach (var p in PlayerState.GetActivePlayers())
         {
-            GameObject winner = activePlayers[0];
-            var health = winner.GetComponent<PlayerHealth>();
-            if (health != null) playerWins[health.playerIndex]++;
+            if (p != null && p.activeInHierarchy)
+            {
+                survivors.Add(p);
+            }
         }
-        else if (isTimeUp || survivorCount == 0)
-        {
-            List<int> survivors = new List<int>();
-            foreach (var p in activePlayers) if (p != null) survivors.Add(p.GetComponent<PlayerHealth>().playerIndex);
-            if (survivors.Count == 0) survivors = PlayerState.LastActiveIndices;
 
-            TriggerSuddenDeath(survivors);
+        int survivorCount = survivors.Count;
+        Debug.Log($"[ラウンド終了判定] リアル生存数: {survivorCount}, 時間切れフラグ: {isTimeUp}");
+
+        // --- パターンA: 誰も生き残っていない場合（全員相打ちで落ちた） ---
+        if (survivorCount == 0)
+        {
+            Debug.Log("全員死亡のため、直前まで生存していたプレイヤー達でサドンデスを開始します。");
+            TriggerSuddenDeath(PlayerState.LastActiveIndices);
             return;
         }
 
-        CheckForGameWinner();
-    }
+        // --- パターンB: 時間切れで2人以上生き残っている場合（引き分け） ---
+        if (isTimeUp && survivorCount > 1)
+        {
+            List<int> survivorIndices = new List<int>();
+            foreach (var p in survivors)
+            {
+                var health = p.GetComponent<PlayerHealth>();
+                if (health != null) survivorIndices.Add(health.playerIndex);
+            }
 
+            Debug.Log($"時間切れ引き分けのため、生き残っている {survivorIndices.Count} 人のみでサドンデスを開始します。");
+            TriggerSuddenDeath(survivorIndices);
+            return;
+        }
+
+        // --- パターンC: 綺麗に1人だけが生き残って決着がついた場合 ---
+        if (survivorCount == 1)
+        {
+            GameObject winner = survivors[0];
+            var health = winner.GetComponent<PlayerHealth>();
+            if (health != null)
+            {
+                playerWins[health.playerIndex]++;
+                Debug.Log($"プレイヤー {health.playerIndex + 1} がラウンド勝利！");
+            }
+            CheckForGameWinner();
+        }
+        else
+        {
+            // それ以外の想定外のケース（時間切れではないが複数人残っているなど）は次のラウンドへ
+            CheckForGameWinner();
+        }
+    }
     private void CheckForGameWinner()
     {
         bool someoneReachedThreeWins = false;
@@ -237,18 +293,5 @@ public class GameManager_M : MonoBehaviour
     public void SetAllPlayersControl(bool enabled) => PlayerState.SetAllPlayersControl(enabled);
     public void ResetScores() => Score.ResetScores();
 
-    public void OnPlayerEliminated(GameObject eliminatedPlayer)
-    {
-        if (PlayerState != null)
-        {
-            var activePlayers = PlayerState.GetActivePlayers();
-            if (activePlayers.Contains(eliminatedPlayer)) activePlayers.Remove(eliminatedPlayer);
-            activePlayers.RemoveAll(p => p == null);
-
-            if (activePlayers.Count <= 1)
-            {
-                NextRound();
-            }
-        }
-    }
+    
 }

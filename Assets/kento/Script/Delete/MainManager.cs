@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Unity.Entities.UniversalDelegates;
 using Unity.VisualScripting.Dependencies.NCalc;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -29,8 +30,20 @@ public class MainManager : MonoBehaviour
 
             if (helth != null)
             {
-                //helth.OnStart(PlayerDataHolder.Instance.ID[i]);
+                helth.OnStart(player, PlayerDataHolder.Instance.ID[i]);
             }
+        }
+        while (i < pos.Length)
+        {
+            var bot = Instantiate(botPrefab, pos[i].position, pos[i].rotation);
+            var health = bot.GetComponent<PlayerHealth>();
+            health.OnStart(bot.gameObject, i);
+            var botCon = bot.GetComponent<BOTController>();
+            if (botCon != null)
+            {
+                botCon.enabled = false;
+            }
+            i++;
         }
     }
 
@@ -47,22 +60,6 @@ public class MainManager : MonoBehaviour
                 pos[i].position;
             players[i].transform.rotation =
                 pos[i].rotation;
-/*            var health = players[i].GetComponent<PlayerHealth>();
-            if (health != null) health.playerIndex = i;
-            int count = 0;
-            if (health)
-            {
-
-            }*/
-            //health.OnStart();
-        }
-        while (i < pos.Length)
-        {
-            var bot = Instantiate(botPrefab, pos[i].position, pos[i].rotation);
-            var health = bot.GetComponent<PlayerHealth>();
-            if (health != null) health.playerIndex = i;
-            Debug.Log($"Bot{i + 1}: index={i}");
-            i++;
         }
     }
 

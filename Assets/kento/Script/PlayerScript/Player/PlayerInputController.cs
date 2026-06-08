@@ -47,6 +47,7 @@ public class PlayerInputController : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (!move.enabled) return;
         if (stateManager.State == State.Knockback)
         {
             move.SetMoveInput(Vector2.zero);
@@ -69,6 +70,7 @@ public class PlayerInputController : MonoBehaviour
 
     public void OnAtatck(InputAction.CallbackContext context)
     {
+        if (!atack.enabled) return;
         if (context.performed)
         {
             atack.Shot(0);

@@ -28,13 +28,10 @@ public class MoveController : MonoBehaviour
         Speed2 = Speed * chargingmoveSpeedRate;
         rotSpeed2 = rotSpeed * ChargeingRotSpeedRate;
         curentSpeed = Speed;
-    }
 
-    private void Start()
-    {
+        rb = GetComponent<Rigidbody>();
         stateManager = GetComponent<PlayerStateManager>();
         ac = GetComponent<AtackController>();
-        rb = GetComponent<Rigidbody>();
     }
 
     public void SetMoveInput(Vector2 input)
