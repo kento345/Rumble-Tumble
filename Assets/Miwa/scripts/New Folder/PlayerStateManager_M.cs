@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Collections;
+using UnityEngine;
+using UnityEngine.Windows;
 
 public class PlayerStateModule
 {
@@ -21,24 +22,17 @@ public class PlayerStateModule
         foreach (var player in GetActivePlayers())
         {
             if (player == null) continue;
-            var input = player.GetComponent<UnityEngine.InputSystem.PlayerInput>();
-            if (input != null) input.enabled = enabled;
-
-            var rb = player.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                if (!enabled)
-                {
-                    rb.linearVelocity = Vector3.zero;
-                    rb.angularVelocity = Vector3.zero;
-                    rb.isKinematic = true;
-                }
-                else rb.isKinematic = false;
-            }
-
-            var moveScript = player.GetComponent<MoveController>();
-            if (moveScript != null) moveScript.enabled = enabled;
+            PlayerInputController controller = player.GetComponent<PlayerInputController>();
+            if (controller != null) controller.OnMoveStop(enabled);
+            BOTController botCon = player.GetComponent<BOTController>();
+            if (botCon != null) botCon.enabled = enabled;
         }
+        /* foreach (var player in PlayerDataHolder.Instance.players)
+         {
+             if (player == null) continue;
+             PlayerInputController input = player.GetComponent<PlayerInputController>();
+             if (input != null) input.OnMoveStop(enabled);
+         }*/
     }
 
     public void RegisterPlayer(GameObject p, int index)

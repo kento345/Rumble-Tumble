@@ -1,0 +1,7 @@
+interface:
+  display_name: "Rumble Code Review"
+  short_description: "現在のUnityコードを制作目線でレビューして改善点を整理"
+  default_prompt: "Use $rumble-code-review to review the current implementation and suggest practical improvements."
+
+policy:
+  allow_implicit_invocation: true

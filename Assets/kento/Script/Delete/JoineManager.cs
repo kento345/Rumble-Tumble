@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,6 +8,7 @@ using UnityEngine.UI;
 
 public class JoineManager : MonoBehaviour
 {
+    [Header("参加,退出,開始キー入力")]
     [SerializeField] private InputAction joinAction = default;  //参加するときの入力
     [SerializeField] private InputAction leaveAction = default;  //参加するときの入力
     [SerializeField] private InputAction startAction = default;
@@ -14,10 +16,10 @@ public class JoineManager : MonoBehaviour
     private int maxPlayers = 4;        //参加上限
 
     //----------
-    [SerializeField] private Text device1text;         //1デバイス名Text
-    [SerializeField] private Text device2text;         //2デバイス名Text
-    [SerializeField] private Text device3text;         //3デバイス名Text
-    [SerializeField] private Text device4text;         //4デバイス名Text
+    [SerializeField] private GameObject device1text;         //1デバイス名Text
+    [SerializeField] private GameObject device2text;         //2デバイス名Text
+    [SerializeField] private GameObject device3text;         //3デバイス名Text
+    [SerializeField] private GameObject device4text;         //4デバイス名Text
 
     //----------
     [SerializeField] private GameObject playerPrefab = default; //Player
@@ -25,6 +27,10 @@ public class JoineManager : MonoBehaviour
 
     private Dictionary<int, int> playerMap = new();
     private List<InputDevice> joinDevices = new List<InputDevice>();             //参加中のデバイス
+
+
+    [SerializeField] private GameObject[] pos = {};                //Player作成位置
+    
 
     private void Awake()
     {
@@ -45,10 +51,10 @@ public class JoineManager : MonoBehaviour
         startAction.performed += OnGameStarte;
 
         //-----Text非表示-----
-        device1text.enabled = false;
-        device2text.enabled = false;
-        device3text.enabled = false;
-        device4text.enabled = false;
+        device1text.SetActive(false);
+        device2text.SetActive(false);
+        device3text.SetActive(false);  
+        device4text.SetActive(false);
     }
 
 
@@ -119,7 +125,7 @@ public class JoineManager : MonoBehaviour
 
         if (playerObjects.TryGetValue(device.deviceId,out GameObject obj))
         {
-            PlayerDataHolder.Instance.RemoveData(obj);
+            PlayerDataHolder.Instance.RemoveData(obj,device.deviceId);
             var input = obj.GetComponent<PlayerInput>();
 
             if(input != null)
@@ -135,21 +141,17 @@ public class JoineManager : MonoBehaviour
     //-----UIの更新-----
     void UpdateDeviceTexts()
     {
-        Text[] texts = { device1text, device2text, device3text, device4text };
+        GameObject[] texts = { device1text, device2text, device3text, device4text };
 
         for (int i = 0; i < texts.Length; i++)
         {
             if (joinDevices[i] != null)
             {
-                texts[i].enabled = true;
-
-                texts[i].text =
-                    $"{joinDevices[i].displayName}\n参加中";
+                texts[i].SetActive(true);
             }
             else
             {
-                texts[i].enabled = false;
-                texts[i].text = "";
+                texts[i].SetActive(false);
             }
         }
     }
@@ -162,11 +164,11 @@ public class JoineManager : MonoBehaviour
 
         if (currentSceneName == "Title" || currentSceneName == "Start")
         {
-            /*            startAction.Disable();
-                        joinAction.Disable();
-                        leaveAction.Disable();*/
+            startAction.Disable();
+            joinAction.Disable();
+            leaveAction.Disable();
 
-            SceneManager.LoadScene("prot");
+            SceneManager.LoadScene("ModeSelect_ui");
         }
     }
     private void Start()
@@ -191,7 +193,12 @@ public class JoineManager : MonoBehaviour
                pairWithDevice: device
            );
         //obj.transform.position = transform.position;
-        PlayerDataHolder.Instance.SetData(obj.gameObject);
+        obj.transform.position = pos[playerIndex].transform.position;
+        obj.transform.rotation = pos[playerIndex].transform.rotation;
+        var input = obj.GetComponent<PlayerInputController>();
+        input.OnMoveStop(false);
+
+        PlayerDataHolder.Instance.SetData(obj.gameObject,playerIndex);
         DontDestroyOnLoad(obj);
         playerObjects[device.deviceId] = obj.gameObject;
     }
