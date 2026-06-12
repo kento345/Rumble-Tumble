@@ -46,9 +46,13 @@ public class Reception : MonoBehaviour,Initalize
         isHit = false;
         isKonckback = false;
 
-        rb.linearVelocity = Vector3.zero;
+        if(rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
 
-        rb.useGravity = true;
+            rb.useGravity = true;
+        }
+        if(col != null)
         col.enabled = true;
 
         if (animeCon != null)

@@ -51,6 +51,7 @@ public class MainManager : MonoBehaviour
     {
         // プレイヤー生成のロジックをここに記述
         joinobj = GameObject.Find("JoinedManager");
+        if(PlayerDataHolder.Instance == null) {return; }
         var players = PlayerDataHolder.Instance.players;
 
         if(players == null) { return; }

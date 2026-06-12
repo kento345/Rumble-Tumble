@@ -20,7 +20,7 @@ public enum State
     None,Knockback
 }
 //ステート管理クラス
-public class PlayerStateManager : MonoBehaviour
+public class PlayerStateManager : MonoBehaviour,Initalize
 {
     //ステートのメソッド,代入はこのクラスのみ参照は別クラスでも可
     public MoveState MoveState {get; private set;} = MoveState.Idle;
@@ -39,6 +39,15 @@ public class PlayerStateManager : MonoBehaviour
     public event Action<ActionState> OnActionStateChanged;
     public event Action<AttackPower> OnAttackPowerChanged;
     public event Action<State> OnStateChanged;
+
+    public void Inited()
+    {
+        UpdateMoveState(Vector2.zero);
+
+        SetActionState(ActionState.None);
+        SetAttackPower(AttackPower.None);
+        SetState(State.None);
+    }
 
     public void UpdateMoveState(Vector2 inputVere)
     {

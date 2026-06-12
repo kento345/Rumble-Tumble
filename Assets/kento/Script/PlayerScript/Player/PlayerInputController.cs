@@ -35,7 +35,7 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnEnable()
     {
-       OnMoveStop(true);
+        OnMoveStop(true);
         var initScripts = GetComponents<Initalize>();
         foreach (var script in initScripts)
         {
@@ -52,6 +52,7 @@ public class PlayerInputController : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        Debug.Log("OnMove");
         if (!move.enabled) return;
         if (stateManager.State == State.Knockback)
         {

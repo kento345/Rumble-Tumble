@@ -54,17 +54,25 @@ public class AtackController : MonoBehaviour , Initalize
         isRigid = false;
         hasHit = false;
         lisCooldown = false;
-
-        searchArea.enabled = false;
-
-        rb.linearVelocity = Vector3.zero;
-
-        animeCon.isStart = false;
-        animeCon.isAttack1 = false;
-        animeCon.isAttack2 = false;
-
-        stateManager.SetActionState(ActionState.None);
-        stateManager.SetAttackPower(AttackPower.None);
+        if (searchArea != null)
+        {
+            searchArea.enabled = false;
+        }
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+        }
+        if (animeCon != null)
+        {
+            animeCon.isStart = false;
+            animeCon.isAttack1 = false;
+            animeCon.isAttack2 = false;
+        }
+        if (stateManager != null)
+        {
+            stateManager.SetActionState(ActionState.None);
+            stateManager.SetAttackPower(AttackPower.None);
+        }
     }
 
     public void SetCharge(float value)
