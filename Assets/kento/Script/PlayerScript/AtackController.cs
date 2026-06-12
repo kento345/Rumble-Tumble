@@ -9,7 +9,7 @@ using UnityEditorInternal;
 #endif
 using UnityEngine;
 
-public class AtackController : MonoBehaviour
+public class AtackController : MonoBehaviour , Initalize
 {
     /*変更点あり*/
     [SerializeField] private float curentForce = 15f;
@@ -40,6 +40,32 @@ public class AtackController : MonoBehaviour
     Rigidbody rb;
     PlayerStateManager stateManager;
     AnimatorController animeCon;
+
+    //初期化
+    public void Inited()
+    {
+        StopAllCoroutines();
+        CancelInvoke();
+
+        t = 0f;
+        curentRecoveryTime = StrongRecoveryTime;
+
+        isMax = false;
+        isRigid = false;
+        hasHit = false;
+        lisCooldown = false;
+
+        searchArea.enabled = false;
+
+        rb.linearVelocity = Vector3.zero;
+
+        animeCon.isStart = false;
+        animeCon.isAttack1 = false;
+        animeCon.isAttack2 = false;
+
+        stateManager.SetActionState(ActionState.None);
+        stateManager.SetAttackPower(AttackPower.None);
+    }
 
     public void SetCharge(float value)
     {

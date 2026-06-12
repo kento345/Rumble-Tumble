@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
-public class ChargeSpike : MonoBehaviour
+public class ChargeSpike : MonoBehaviour,Initalize
 {
     //[SerializeField] private DecalProjector targetRender;
     [SerializeField] private float MaxChargeTime = 1.5f;
@@ -24,6 +24,21 @@ public class ChargeSpike : MonoBehaviour
     private Coroutine meter;
     //---------------
 
+
+    public void Inited()
+    {
+        MeterImage.fillAmount = 0;
+        if (ac != null)
+        {
+            ac.SetCharge(0);
+        }
+
+        if (meter != null)
+        {
+            StopCoroutine(meter);
+            meter = null;
+        }
+    }
     /*  private void OnEnable()
       {
           mat = new Material(targetRender.material);

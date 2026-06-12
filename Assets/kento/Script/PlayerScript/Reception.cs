@@ -4,7 +4,7 @@ using UnityEditor.Experimental.GraphView;
 #endif
 using UnityEngine;
 
-public class Reception : MonoBehaviour
+public class Reception : MonoBehaviour,Initalize
 {
     /*変更点あり*/
     [Header("ノックバック,無敵設定")]
@@ -33,6 +33,29 @@ public class Reception : MonoBehaviour
     private PlayerInputController playerCon;
     private BOTController botCon;
 
+    public void Inited()
+    {
+        StopAllCoroutines();
+
+        hit.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        knock.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        knockbackCounter = 0;
+        knockbackDir = Vector3.zero;
+
+        isHit = false;
+        isKonckback = false;
+
+        rb.linearVelocity = Vector3.zero;
+
+        rb.useGravity = true;
+        col.enabled = true;
+
+        if (animeCon != null)
+        {
+            animeCon.isHit = false;
+        }
+    }
     private void Start()
     {
         hit.Stop();

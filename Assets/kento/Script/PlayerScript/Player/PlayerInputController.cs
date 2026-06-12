@@ -25,7 +25,7 @@ public class PlayerInputController : MonoBehaviour
     private MoveController move;
     private AtackController atack;
 
-
+    
     private void Awake()
     {
         stateManager = GetComponent<PlayerStateManager>();
@@ -36,6 +36,11 @@ public class PlayerInputController : MonoBehaviour
     private void OnEnable()
     {
        OnMoveStop(true);
+        var initScripts = GetComponents<Initalize>();
+        foreach (var script in initScripts)
+        {
+            script.Inited();
+        }
     }
 
     public void OnMoveStop(bool x)

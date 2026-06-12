@@ -2,7 +2,7 @@
 
 
 
-public class MoveController : MonoBehaviour
+public class MoveController : MonoBehaviour,Initalize
 {
     [Header("移動設定")]
     public float Speed = 5.0f;
@@ -23,6 +23,20 @@ public class MoveController : MonoBehaviour
     private PlayerStateManager stateManager;
     private AtackController ac;
 
+    //初期化
+    public void Inited()
+    {
+        inputVer = Vector2.zero;
+
+        curentSpeed = Speed;
+        curentRotSpeed = rotSpeed;
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+    }
     private void Awake()
     {
         Speed2 = Speed * chargingmoveSpeedRate;
