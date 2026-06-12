@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class PlayerStatusUI : MonoBehaviour
 {
@@ -18,12 +19,39 @@ public class PlayerStatusUI : MonoBehaviour
     [Header("スコア表示用")]
     public Text scoreText;
 
+    //画面揺らし用の変数
+    private RectTransform rectTransform;
+    private Vector3 originalLocalPosition;
+    private Coroutine shakeCoroutine;
 
-    
+
+
+    void Awake()
+    {
+        rectTransform = GetComponent<RectTransform>();
+        if (rectTransform != null)
+        {
+            originalLocalPosition = rectTransform.localPosition;
+        }
+    }
+
+
+
     public void SetupUI(int initialValue, Sprite alive, Sprite dead,bool isScoreMode)
     {
         myAliveSprite = alive;
         myDeadSprite = dead;
+
+
+        if (shakeCoroutine != null)
+        {
+            StopCoroutine(shakeCoroutine);
+            shakeCoroutine = null;
+        }
+        if (rectTransform != null)
+        {
+            rectTransform.localPosition = originalLocalPosition;
+        }
 
         if (backgroundPanel != null && myAliveSprite != null)
         {
@@ -80,5 +108,41 @@ public class PlayerStatusUI : MonoBehaviour
     public void SetEliminated(bool isDead)
     {
         backgroundPanel.sprite = isDead ? myDeadSprite : myAliveSprite;
+
+        if (isDead)
+        {
+            StartShake(0.4f, 15f); // 画面揺らすで～
+        }
+    }
+
+    //画面揺らしのコルーチン
+    public void StartShake(float duration, float magnitude)
+    {
+        if (rectTransform == null) return;
+
+        //一旦止めて二重書き込みを防ぐ
+        if (shakeCoroutine != null) StopCoroutine(shakeCoroutine);
+
+        shakeCoroutine = StartCoroutine(ShakeRoutine(duration, magnitude));
+    }
+
+
+    private IEnumerator ShakeRoutine(float duration, float magnitude)
+    {
+        float elapsed = 0.0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+
+            float x = Random.Range(-1f, 1f) * magnitude;
+            float y = Random.Range(-1f, 1f) * magnitude;
+
+            rectTransform.localPosition = new Vector3(originalLocalPosition.x + x, originalLocalPosition.y + y, originalLocalPosition.z);
+
+            yield return null;
+        }
+        rectTransform.localPosition = originalLocalPosition;
+        shakeCoroutine = null;
     }
 }
